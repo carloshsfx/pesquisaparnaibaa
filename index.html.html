@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Pesquisa Parnaíba">
+    <meta name="theme-color" content="#1e40af">
+    <title>Pesquisa Política - Parnaíba (PI)</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        :root {
+            --primary-color: #1e40af;
+            --secondary-color: #0ea5e9;
+            --success-color: #10b981;
+            --danger-color: #ef4444;
+            --light-bg: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            position: fixed;
+            overflow: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 16px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding-top: max(15px, env(safe-area-inset-top));
+        }
+
+        header h1 {
+            font-size: 18px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Container Principal */
+        .container {
+            flex: 1;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+
+        /* Abas */
+        .tabs {
+            display: flex;
+            gap: 0;
+            background: white;
+            border-bottom: 2px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            flex-shrink: 0;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 8px;
+            border: none;
+            background: white;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-btn i {
+            font-size: 18px;
+        }
+
+        /* Conteúdo das Abas */
+        .tab-content {
+            display: none;
+            padding: 12px 16px 16px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Estatísticas */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stat-box {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-box:nth-child(1) .stat-value {
+            color: #3b82f6;
+        }
+
+        .stat-box:nth-child(2) .stat-value {
+            color: #ec4899;
+        }
+
+        .stat-box:nth-child(3) .stat-value {
+            color: var(--success-color);
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 14px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+            -webkit-appearance: none;
+            appearance: none;
+            background-color: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+        }
+
+        /* Radio Buttons */
+        .radio-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 14px 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            font-size: 14px;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Botões */
+        .btn {
+            padding: 14px 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            margin-bottom: 8px;
+        }
+
+        .btn-secondary:active {
+            background: var(--light-bg);
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+            padding: 8px 12px;
+            font-size: 12px;
+            width: auto;
+        }
+
+        /* Tabela */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        th {
+            padding: 10px 8px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        td {
+            padding: 10px 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            margin-bottom: 12px;
+            color: var(--border-color);
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 12px 14px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-15px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #047857;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: flex-end;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            padding: 20px 16px;
+            border-radius: 16px 16px 0 0;
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+            max-height: 90vh;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: calc(20px + env(safe-area-inset-bottom));
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(14, 165, 233, 0.1);
+            border: 1px solid rgba(14, 165, 233, 0.3);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        /* Action Buttons */
+        .action-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .action-group .btn {
+            margin-bottom: 0;
+        }
+
+        /* Responsivo */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 16px;
+            }
+
+            header p {
+                font-size: 11px;
+            }
+
+            .tab-btn {
+                font-size: 12px;
+                padding: 10px 6px;
+            }
+
+            .stat-value {
+                font-size: 24px;
+            }
+
+            .btn {
+                padding: 13px 14px;
+                font-size: 13px;
+            }
+        }
+
+        /* Prevenir zoom em input */
+        input[type="text"],
+        input[type="number"],
+        select {
+            font-size: 16px !important;
+        }
+
+        /* Safe area */
+        @supports (padding: max(0px)) {
+            body {
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+
+            header {
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+            }
+
+            .tab-content {
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+            }
+        }
+
+        /* Gestos */
+        body {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        button {
+            -webkit-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>
+            <i class="fas fa-clipboard-list"></i>
+            Pesquisa Parnaíba
+        </h1>
+        <p>Registre entrevistas - PI 2024</p>
+    </header>
+
+    <!-- Abas -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="abrirAba('registrar')">
+            <i class="fas fa-plus"></i>
+            <span>Registrar</span>
+        </button>
+        <button class="tab-btn" onclick="abrirAba('lista')">
+            <i class="fas fa-list"></i>
+            <span>Lista</span>
+        </button>
+        <button class="tab-btn" onclick="abrirAba('opcoes')">
+            <i class="fas fa-cog"></i>
+            <span>Opções</span>
+        </button>
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="container">
+        <div id="alertContainer"></div>
+
+        <!-- Aba Registrar -->
+        <div id="registrar" class="tab-content active">
+            <!-- Estatísticas -->
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">👨 Homens</div>
+                    <div class="stat-value" id="totalHomens">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">👩 Mulheres</div>
+                    <div class="stat-value" id="totalMulheres">0</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">✅ Total</div>
+                    <div class="stat-value" id="totalGeral">0</div>
+                </div>
+            </div>
+
+            <!-- Formulário -->
+            <form id="formEntrevista">
+                <div class="form-group">
+                    <label for="bairro">📍 Bairro ou Povoado</label>
+                    <input type="text" id="bairro" placeholder="Ex: Centro, Atalaia..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>👤 Sexo</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="homem" name="sexo" value="Homem" required>
+                            <label for="homem" class="radio-label">👨 Homem</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="mulher" name="sexo" value="Mulher" required>
+                            <label for="mulher" class="radio-label">👩 Mulher</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantidade">🔢 Quantidade</label>
+                    <input type="number" id="quantidade" placeholder="1" min="1" value="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Registrar Entrevista
+                </button>
+            </form>
+
+            <div class="info-box">
+                <strong>💾 Seus dados são salvos automaticamente no seu celular.</strong><br>
+                Cada pessoa tem seus próprios dados.
+            </div>
+        </div>
+
+        <!-- Aba Lista -->
+        <div id="lista" class="tab-content">
+            <div class="table-container">
+                <table id="tabelaRegistros">
+                    <thead>
+                        <tr>
+                            <th>Bairro</th>
+                            <th>Sexo</th>
+                            <th>Qtd</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bodyTabela">
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding: 40px 20px;">
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <p>Nenhum registro</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Aba Opções -->
+        <div id="opcoes" class="tab-content">
+            <div style="padding: 8px 0;">
+                <button class="btn btn-secondary" id="btnExportarExcel">
+                    <i class="fas fa-file-excel"></i>
+                    Exportar Excel
+                </button>
+
+                <button class="btn btn-secondary" id="btnExportarCSV">
+                    <i class="fas fa-file-csv"></i>
+                    Exportar CSV
+                </button>
+
+                <button class="btn btn-secondary" id="btnCompartilhar">
+                    <i class="fas fa-share-alt"></i>
+                    Compartilhar Link
+                </button>
+
+                <button class="btn btn-secondary" id="btnLimparDados">
+                    <i class="fas fa-trash"></i>
+                    Limpar Tudo
+                </button>
+
+                <div class="info-box" style="margin-top: 16px;">
+                    <strong>ℹ️ Informações:</strong><br>
+                    • Seus dados ficam apenas no seu celular<br>
+                    • Cada pessoa tem seus próprios dados<br>
+                    • Compatível com iOS e Android<br>
+                    • Funciona offline
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edição -->
+    <div id="modalEdicao" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Editar Entrevista</h2>
+                <button type="button" class="close-btn" onclick="fecharModal()">&times;</button>
+            </div>
+            <form id="formEdicao">
+                <div class="form-group">
+                    <label for="edBairro">Bairro</label>
+                    <input type="text" id="edBairro" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Sexo</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="edHomem" name="edSexo" value="Homem" required>
+                            <label for="edHomem" class="radio-label">👨 Homem</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="edMulher" name="edSexo" value="Mulher" required>
+                            <label for="edMulher" class="radio-label">👩 Mulher</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="edQuantidade">Quantidade</label>
+                    <input type="number" id="edQuantidade" min="1" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    Salvar
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="fecharModal()">
+                    Cancelar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ========== GERENCIAMENTO DE DADOS ==========
+        const CHAVE_STORAGE = 'pesquisa_parnaiba_' + Date.now(); // ID único para cada pessoa
+
+        class GerenciadorPesquisa {
+            constructor() {
+                this.carregarDados();
+            }
+
+            carregarDados() {
+                const dados = localStorage.getItem(CHAVE_STORAGE);
+                this.entrevistas = dados ? JSON.parse(dados) : [];
+            }
+
+            salvarDados() {
+                localStorage.setItem(CHAVE_STORAGE, JSON.stringify(this.entrevistas));
+            }
+
+            adicionarEntrevista(bairro, sexo, quantidade) {
+                const entrevista = {
+                    id: Date.now(),
+                    bairro: bairro.trim(),
+                    sexo: sexo,
+                    quantidade: parseInt(quantidade),
+                    data: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
+                };
+                this.entrevistas.push(entrevista);
+                this.salvarDados();
+                return entrevista;
+            }
+
+            editarEntrevista(id, bairro, sexo, quantidade) {
+                const index = this.entrevistas.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    this.entrevistas[index] = {
+                        ...this.entrevistas[index],
+                        bairro: bairro.trim(),
+                        sexo: sexo,
+                        quantidade: parseInt(quantidade)
+                    };
+                    this.salvarDados();
+                    return true;
+                }
+                return false;
+            }
+
+            excluirEntrevista(id) {
+                const index = this.entrevistas.findIndex(e => e.id === id);
+                if (index !== -1) {
+                    this.entrevistas.splice(index, 1);
+                    this.salvarDados();
+                    return true;
+                }
+                return false;
+            }
+
+            obterTotais() {
+                const totais = { homens: 0, mulheres: 0, geral: 0 };
+                this.entrevistas.forEach(e => {
+                    if (e.sexo === 'Homem') {
+                        totais.homens += e.quantidade;
+                    } else if (e.sexo === 'Mulher') {
+                        totais.mulheres += e.quantidade;
+                    }
+                });
+                totais.geral = totais.homens + totais.mulheres;
+                return totais;
+            }
+
+            limparTodos() {
+                this.entrevistas = [];
+                this.salvarDados();
+            }
+        }
+
+        const gerenciador = new GerenciadorPesquisa();
+
+        // ========== EVENTOS ==========
+        const formEntrevista = document.getElementById('formEntrevista');
+        const bodyTabela = document.getElementById('bodyTabela');
+        const modalEdicao = document.getElementById('modalEdicao');
+        let idEmEdicao = null;
+
+        formEntrevista.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const bairro = document.getElementById('bairro').value;
+            const sexo = document.querySelector('input[name="sexo"]:checked').value;
+            const quantidade = document.getElementById('quantidade').value;
+
+            gerenciador.adicionarEntrevista(bairro, sexo, quantidade);
+            formEntrevista.reset();
+            document.getElementById('bairro').focus();
+
+            exibirAlerta('✅ Entrevista registrada!', 'success');
+            atualizarTabela();
+            atualizarTotais();
+        });
+
+        document.getElementById('btnExportarExcel').addEventListener('click', exportarExcel);
+        document.getElementById('btnExportarCSV').addEventListener('click', exportarCSV);
+        document.getElementById('btnCompartilhar').addEventListener('click', compartilharLink);
+        document.getElementById('btnLimparDados').addEventListener('click', () => {
+            if (confirm('Tem certeza? Vai apagar TODOS os registros!')) {
+                gerenciador.limparTodos();
+                atualizarTabela();
+                atualizarTotais();
+                exibirAlerta('Dados removidos', 'success');
+            }
+        });
+
+        document.getElementById('formEdicao').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if (idEmEdicao !== null) {
+                const bairro = document.getElementById('edBairro').value;
+                const sexo = document.querySelector('input[name="edSexo"]:checked').value;
+                const quantidade = document.getElementById('edQuantidade').value;
+
+                if (gerenciador.editarEntrevista(idEmEdicao, bairro, sexo, quantidade)) {
+                    exibirAlerta('✅ Registro atualizado!', 'success');
+                    fecharModal();
+                    atualizarTabela();
+                    atualizarTotais();
+                }
+            }
+        });
+
+        // ========== FUNÇÕES ==========
+        function abrirAba(abaId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(abaId).classList.add('active');
+            event.target.closest('.tab-btn').classList.add('active');
+        }
+
+        function atualizarTabela() {
+            if (gerenciador.entrevistas.length === 0) {
+                bodyTabela.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align: center; padding: 40px 20px;">
+                            <div class="empty-state">
+                                <i class="fas fa-inbox"></i>
+                                <p>Nenhum registro</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            bodyTabela.innerHTML = gerenciador.entrevistas.map(e => `
+                <tr>
+                    <td>${e.bairro}</td>
+                    <td>${e.sexo === 'Homem' ? '👨' : '👩'}</td>
+                    <td><strong>${e.quantidade}</strong></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="abrirEdicao(${e.id})">✏️</button>
+                        <button class="btn btn-danger" onclick="excluirRegistro(${e.id})" style="background: #ef4444;">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function atualizarTotais() {
+            const totais = gerenciador.obterTotais();
+            document.getElementById('totalHomens').textContent = totais.homens;
+            document.getElementById('totalMulheres').textContent = totais.mulheres;
+            document.getElementById('totalGeral').textContent = totais.geral;
+        }
+
+        function abrirEdicao(id) {
+            idEmEdicao = id;
+            const entrevista = gerenciador.entrevistas.find(e => e.id === id);
+            if (entrevista) {
+                document.getElementById('edBairro').value = entrevista.bairro;
+                document.querySelector(`input[name="edSexo"][value="${entrevista.sexo}"]`).checked = true;
+                document.getElementById('edQuantidade').value = entrevista.quantidade;
+                modalEdicao.classList.add('active');
+            }
+        }
+
+        function fecharModal() {
+            modalEdicao.classList.remove('active');
+            idEmEdicao = null;
+        }
+
+        function excluirRegistro(id) {
+            if (confirm('Deletar este registro?')) {
+                gerenciador.excluirEntrevista(id);
+                exibirAlerta('Registro removido', 'success');
+                atualizarTabela();
+                atualizarTotais();
+            }
+        }
+
+        function exibirAlerta(mensagem, tipo) {
+            const container = document.getElementById('alertContainer');
+            const alertId = 'alert_' + Date.now();
+            const html = `<div class="alert alert-${tipo}" id="${alertId}">${mensagem}</div>`;
+            container.insertAdjacentHTML('beforeend', html);
+            setTimeout(() => {
+                const alerta = document.getElementById(alertId);
+                if (alerta) alerta.remove();
+            }, 2500);
+        }
+
+        function exportarExcel() {
+            const totais = gerenciador.obterTotais();
+            let csv = 'PESQUISA POLÍTICA - PARNAÍBA\n\n';
+            csv += 'RESUMO\n';
+            csv += `Homens,${totais.homens}\n`;
+            csv += `Mulheres,${totais.mulheres}\n`;
+            csv += `Total,${totais.geral}\n\n`;
+            csv += 'DETALHES\n';
+            csv += 'Bairro,Sexo,Quantidade,Hora\n';
+            csv += gerenciador.entrevistas.map(e => `${e.bairro},${e.sexo},${e.quantidade},${e.data}`).join('\n');
+
+            const link = document.createElement('a');
+            link.setAttribute('href', 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(csv));
+            link.setAttribute('download', `pesquisa_${new Date().getTime()}.xls`);
+            link.click();
+            exibirAlerta('✅ Excel baixado!', 'success');
+        }
+
+        function exportarCSV() {
+            const totais = gerenciador.obterTotais();
+            let csv = 'PESQUISA POLÍTICA - PARNAÍBA\n\n';
+            csv += 'RESUMO\n';
+            csv += `Homens,${totais.homens}\n`;
+            csv += `Mulheres,${totais.mulheres}\n`;
+            csv += `Total,${totais.geral}\n\n`;
+            csv += 'DETALHES\n';
+            csv += 'Bairro,Sexo,Quantidade,Hora\n';
+            csv += gerenciador.entrevistas.map(e => `"${e.bairro}","${e.sexo}",${e.quantidade},"${e.data}"`).join('\n');
+
+            const link = document.createElement('a');
+            link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv));
+            link.setAttribute('download', `pesquisa_${new Date().getTime()}.csv`);
+            link.click();
+            exibirAlerta('✅ CSV baixado!', 'success');
+        }
+
+        function compartilharLink() {
+            const url = window.location.href;
+            if (navigator.share) {
+                navigator.share({ title: 'Pesquisa Parnaíba', url: url });
+            } else {
+                alert('Link para compartilhar:\n\n' + url);
+            }
+        }
+
+        modalEdicao.addEventListener('click', (e) => {
+            if (e.target === modalEdicao) fecharModal();
+        });
+
+        atualizarTabela();
+        atualizarTotais();
+    </script>
+</body>
+</html>

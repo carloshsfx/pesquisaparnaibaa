@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PratoPronto - Receitas com o que você tem</title>
+  <style>
+    :root {
+      --bg: #fff8ef;
+      --card: #ffffff;
+      --text: #22170f;
+      --muted: #76695d;
+      --primary: #ff7a1a;
+      --primary-dark: #db5f00;
+      --secondary: #2f7d32;
+      --line: #eadccc;
+      --soft: #fff0df;
+      --danger: #c0392b;
+      --shadow: 0 18px 45px rgba(84, 45, 14, 0.12);
+      --radius: 22px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top left, rgba(255, 122, 26, .16), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(47, 125, 50, .12), transparent 35%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 22px 6vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      position: sticky;
+      top: 0;
+      background: rgba(255, 248, 239, .84);
+      backdrop-filter: blur(14px);
+      z-index: 5;
+      border-bottom: 1px solid rgba(234, 220, 204, .7);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 900;
+      font-size: 1.35rem;
+      letter-spacing: -0.04em;
+    }
+
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), #ffb45f);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      box-shadow: 0 10px 25px rgba(255, 122, 26, .32);
+      font-size: 1.25rem;
+    }
+
+    nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: .92rem;
+      padding: 9px 12px;
+      border-radius: 999px;
+    }
+
+    nav a:hover {
+      background: var(--soft);
+      color: var(--primary-dark);
+    }
+
+    .container {
+      width: min(1180px, 88vw);
+      margin: auto;
+    }
+
+    .hero {
+      padding: 58px 0 36px;
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 38px;
+      align-items: center;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--soft);
+      color: var(--primary-dark);
+      border: 1px solid #ffd9b5;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 5vw, 5.1rem);
+      line-height: .95;
+      letter-spacing: -0.075em;
+      margin-bottom: 22px;
+    }
+
+    .hero p {
+      font-size: 1.12rem;
+      line-height: 1.65;
+      color: var(--muted);
+      max-width: 650px;
+      margin-bottom: 26px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    button, .button {
+      border: 0;
+      cursor: pointer;
+      border-radius: 15px;
+      padding: 14px 18px;
+      font-weight: 900;
+      font-size: .98rem;
+      transition: .2s ease;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 12px 26px rgba(255, 122, 26, .28);
+    }
+
+    .primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .ghost {
+      background: white;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .ghost:hover {
+      border-color: #ffc996;
+      transform: translateY(-1px);
+    }
+
+    .hero-card {
+      background: rgba(255, 255, 255, .82);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 32px;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .phone {
+      background: #16100b;
+      border-radius: 34px;
+      padding: 14px;
+      color: white;
+      min-height: 500px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
+    }
+
+    .phone-screen {
+      background: linear-gradient(180deg, #fff8ef, #ffffff);
+      color: var(--text);
+      border-radius: 26px;
+      min-height: 472px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .mini-photo {
+      height: 170px;
+      border-radius: 22px;
+      background:
+        linear-gradient(135deg, rgba(255,122,26,.24), rgba(47,125,50,.14)),
+        url("data:image/svg+xml,%3Csvg width='500' height='280' xmlns='http://www.w3.org/2000/svg'%3E%3Crect width='500' height='280' fill='%23fff0df'/%3E%3Ccircle cx='115' cy='145' r='53' fill='%23d98b42'/%3E%3Ccircle cx='230' cy='116' r='44' fill='%23f2d36b'/%3E%3Ccircle cx='330' cy='162' r='58' fill='%2367a85d'/%3E%3Cellipse cx='385' cy='82' rx='58' ry='34' fill='%23e74c3c'/%3E%3C/svg%3E");
+      background-size: cover;
+      border: 1px solid #ffe0bd;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      background: var(--soft);
+      color: var(--primary-dark);
+      border: 1px solid #ffd8b1;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .mini-recipe {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .mini-recipe strong {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: .86rem;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    section {
+      padding: 38px 0;
+    }
+
+    .section-title {
+      margin-bottom: 22px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(1.8rem, 3vw, 2.7rem);
+      letter-spacing: -0.055em;
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      color: var(--muted);
+      line-height: 1.55;
+      max-width: 730px;
+    }
+
+    .app-box {
+      background: rgba(255, 255, 255, .8);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      border-radius: 32px;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: .9fr 1.1fr;
+      gap: 24px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .upload-zone {
+      border: 2px dashed #ffc184;
+      border-radius: 20px;
+      padding: 22px;
+      text-align: center;
+      background: #fffaf4;
+      min-height: 240px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .upload-zone img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 16px;
+      display: none;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: .98rem;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(255, 122, 26, .12);
+    }
+
+    .ingredient-list {
+      margin-top: 18px;
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .ingredient {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #f8fff4;
+      color: #246426;
+      border: 1px solid #cfe8cf;
+      padding: 8px 11px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: .9rem;
+    }
+
+    .ingredient button {
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      background: #e9f6e7;
+      color: #246426;
+      font-size: .8rem;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .recipes {
+      display: grid;
+      gap: 14px;
+    }
+
+    .recipe-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      padding: 18px;
+      transition: .2s ease;
+    }
+
+    .recipe-card:hover {
+      border-color: #ffc184;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(84, 45, 14, .08);
+    }
+
+    .recipe-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .recipe-head h3 {
+      font-size: 1.15rem;
+      letter-spacing: -0.03em;
+    }
+
+    .tag {
+      background: var(--soft);
+      color: var(--primary-dark);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: .78rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .recipe-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .recipe-meta span {
+      background: #f7f3ef;
+      color: var(--muted);
+      padding: 7px 9px;
+      border-radius: 999px;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    details {
+      margin-top: 12px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--primary-dark);
+    }
+
+    .recipe-body {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .recipe-body h4 {
+      color: var(--text);
+      margin: 12px 0 6px;
+    }
+
+    .recipe-body ul, .recipe-body ol {
+      padding-left: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .feature {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+
+    .feature .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+    }
+
+    .feature h3 {
+      margin-bottom: 8px;
+      letter-spacing: -0.03em;
+    }
+
+    .feature p {
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    footer {
+      padding: 34px 6vw;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 28px;
+      background: #fffaf5;
+      border: 1px dashed #ffd2a6;
+      border-radius: 20px;
+    }
+
+    .notice {
+      color: var(--muted);
+      font-size: .88rem;
+      line-height: 1.45;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 900px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero,
+      .app-box {
+        grid-template-columns: 1fr;
+      }
+
+      .filters,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        width: min(94vw, 1180px);
+      }
+
+      .phone {
+        min-height: auto;
+      }
+
+      .phone-screen {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">🍽️</div>
+      <span>PratoPronto</span>
+    </div>
+    <nav>
+      <a href="#demo">Testar demo</a>
+      <a href="#funcionalidades">Funcionalidades</a>
+      <a href="#sobre">Sobre</a>
+    </nav>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <div class="badge">🤖 Receita inteligente com o que você tem</div>
+        <h1>Tire uma foto. Descubra o que cozinhar.</h1>
+        <p>
+          O PratoPronto transforma os alimentos que você tem em casa em receitas simples,
+          rápidas e úteis, com tempo de preparo, calorias aproximadas, ingredientes,
+          temperos e passo a passo.
+        </p>
+        <div class="actions">
+          <a href="#demo" class="button primary">Testar agora</a>
+          <a href="#funcionalidades" class="button ghost">Ver funcionalidades</a>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="mini-photo"></div>
+            <strong>Ingredientes encontrados</strong>
+            <div class="chips">
+              <span class="chip">arroz</span>
+              <span class="chip">ovo</span>
+              <span class="chip">tomate</span>
+              <span class="chip">frango</span>
+            </div>
+            <div class="mini-recipe">
+              <strong>Mexidão rápido de frango com ovo</strong>
+              <div class="meta">
+                <span>⏱️ 18 min</span>
+                <span>🔥 520 kcal</span>
+                <span>💪 34g proteína</span>
+              </div>
+            </div>
+            <div class="mini-recipe">
+              <strong>Arroz cremoso com frango</strong>
+              <div class="meta">
+                <span>⏱️ 25 min</span>
+                <span>🔥 610 kcal</span>
+                <span>🥘 fácil</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="demo">
+      <div class="section-title">
+        <h2>Demo funcional em um único arquivo</h2>
+        <p>
+          Esta versão inicial funciona sem backend. A identificação por imagem está simulada:
+          ao enviar uma foto, o sistema sugere alguns ingredientes comuns. Você pode editar tudo manualmente.
+          Depois, o PratoPronto gera receitas compatíveis.
+        </p>
+      </div>
+
+      <div class="app-box">
+        <div class="panel">
+          <h3>1. Envie uma foto dos alimentos</h3>
+          <p class="notice">Na versão real, esta parte seria conectada a uma IA de visão computacional.</p>
+
+          <label class="upload-zone" for="photoInput">
+            <div id="uploadText">
+              <div style="font-size: 3rem; margin-bottom: 8px;">📸</div>
+              <strong>Clique para enviar uma foto</strong>
+              <p class="notice">Use imagem da geladeira, mesa, compras ou ingredientes.</p>
+            </div>
+            <img id="preview" alt="Prévia da foto enviada" />
+          </label>
+          <input id="photoInput" type="file" accept="image/*" />
+
+          <div class="actions" style="margin-top: 14px;">
+            <button class="primary" onclick="simulateRecognition()">Identificar ingredientes</button>
+            <button class="ghost" onclick="clearAll()">Limpar</button>
+          </div>
+
+          <div class="input-row">
+            <input id="ingredientInput" placeholder="Adicionar ingrediente: ex. frango" />
+            <button class="primary" onclick="addIngredientFromInput()">Adicionar</button>
+          </div>
+
+          <div id="ingredientList" class="ingredient-list"></div>
+
+          <p class="notice">
+            Dica: teste com ingredientes como arroz, feijão, ovo, frango, carne, tomate,
+            cebola, macarrão, sardinha, batata, cenoura e queijo.
+          </p>
+        </div>
+
+        <div class="panel">
+          <h3>2. Receitas sugeridas</h3>
+
+          <div class="filters">
+            <select id="goalFilter" onchange="renderRecipes()">
+              <option value="todos">Objetivo: todos</option>
+              <option value="rapida">Rápida</option>
+              <option value="economica">Econômica</option>
+              <option value="fitness">Fitness</option>
+            </select>
+
+            <select id="timeFilter" onchange="renderRecipes()">
+              <option value="todos">Tempo: todos</option>
+              <option value="15">Até 15 min</option>
+              <option value="30">Até 30 min</option>
+              <option value="60">Até 60 min</option>
+            </select>
+
+            <select id="difficultyFilter" onchange="renderRecipes()">
+              <option value="todos">Dificuldade: todas</option>
+              <option value="muito fácil">Muito fácil</option>
+              <option value="fácil">Fácil</option>
+              <option value="médio">Médio</option>
+            </select>
+          </div>
+
+          <div id="recipes" class="recipes">
+            <div class="empty">
+              Adicione ingredientes para receber sugestões de receitas.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="funcionalidades">
+      <div class="section-title">
+        <h2>Funcionalidades pensadas para o produto real</h2>
+        <p>O MVP pode começar simples, mas o projeto já nasce com espaço para evoluir.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="feature">
+          <div class="icon">📷</div>
+          <h3>Foto inteligente</h3>
+          <p>O usuário tira uma foto dos alimentos e o sistema identifica ingredientes usando inteligência artificial.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🥘</div>
+          <h3>Receitas possíveis</h3>
+          <p>O app prioriza receitas que a pessoa consegue fazer com o que já tem em casa.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🔥</div>
+          <h3>Calorias e macros</h3>
+          <p>Cada receita pode mostrar calorias aproximadas, proteína, carboidrato, gordura e porções.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">💸</div>
+          <h3>Modo econômico</h3>
+          <p>Receitas baratas, simples e com ingredientes comuns do dia a dia brasileiro.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">💪</div>
+          <h3>Modo fitness</h3>
+          <p>Sugestões com mais proteína, menos óleo e opções melhores para quem treina.</p>
+        </div>
+        <div class="feature">
+          <div class="icon">🛒</div>
+          <h3>Lista de compras</h3>
+          <p>Quando faltar ingrediente, o app pode gerar uma lista automática para completar a receita.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="sobre">
+      <div class="section-title">
+        <h2>Sobre o PratoPronto</h2>
+        <p>
+          O PratoPronto foi pensado para ser um app brasileiro, simples e útil: menos desperdício,
+          mais economia e mais praticidade na cozinha. A primeira versão pode ser feita com front-end,
+          banco de receitas e integração futura com IA para reconhecimento real de alimentos.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>PratoPronto</strong> — Você mostra os ingredientes. A gente monta o prato.
+  </footer>
+
+  <script>
+    const state = {
+      ingredients: [],
+      favorites: []
+    };
+
+    const commonIngredients = [
+      "arroz", "feijão", "ovo", "frango", "tomate", "cebola", "alho", "macarrão",
+      "carne", "batata", "cenoura", "queijo", "sardinha", "milho", "cheiro-verde"
+    ];
+
+    const recipesDatabase = [
+      {
+        title: "Mexidão rápido de arroz com ovo",
+        tags: ["rapida", "economica"],
+        required: ["arroz", "ovo", "cebola"],
+        optional: ["tomate", "cheiro-verde", "alho"],
+        time: 15,
+        calories: 520,
+        protein: 22,
+        carbs: 66,
+        fat: 18,
+        portions: 1,
+        difficulty: "muito fácil",
+        seasonings: ["sal", "pimenta-do-reino", "alho", "cebola", "cheiro-verde"],
+        steps: [
+          "Refogue alho e cebola em um fio de óleo ou azeite.",
+          "Adicione o arroz cozido e misture bem.",
+          "Coloque os ovos e mexa até cozinhar.",
+          "Ajuste sal, pimenta e finalize com cheiro-verde."
+        ]
+      },
+      {
+        title: "Frango com batata e cenoura",
+        tags: ["fitness", "economica"],
+        required: ["frango", "batata", "cenoura"],
+        optional: ["cebola", "alho", "tomate"],
+        time: 35,
+        calories: 610,
+        protein: 42,
+        carbs: 58,
+        fat: 17,
+        portions: 2,
+        difficulty: "fácil",
+        seasonings: ["sal", "alho", "cebola", "páprica", "pimenta-do-reino", "colorau"],
+        steps: [
+          "Tempere o frango com alho, sal, pimenta e páprica.",
+          "Refogue o frango até dourar levemente.",
+          "Adicione batata, cenoura e um pouco de água.",
+          "Cozinhe até os legumes ficarem macios e o frango no ponto."
+        ]
+      },
+      {
+        title: "Macarrão econômico com sardinha",
+        tags: ["rapida", "economica"],
+        required: ["macarrão", "sardinha", "tomate"],
+        optional: ["cebola", "alho", "milho", "cheiro-verde"],
+        time: 20,
+        calories: 680,
+        protein: 31,
+        carbs: 82,
+        fat: 22,
+        portions: 2,
+        difficulty: "muito fácil",
+        seasonings: ["sal", "alho", "cebola", "orégano", "pimenta-do-reino"],
+        steps: [
+          "Cozinhe o macarrão até ficar no ponto.",
+          "Refogue alho, cebola e tomate.",
+          "Adicione a sardinha e misture bem.",
+          "Junte o macarrão ao molho e finalize com cheiro-verde."
+        ]
+      },
+      {
+        title: "Carne moída com arroz e feijão",
+        tags: ["economica"],
+        required: ["carne", "arroz", "feijão"],
+        optional: ["cebola", "alho", "tomate", "cheiro-verde"],
+        time: 30,
+        calories: 740,
+        protein: 44,
+        carbs: 79,
+        fat: 24,
+        portions: 2,
+        difficulty: "fácil",
+        seasonings: ["alho", "cebola", "sal", "pimenta-do-reino", "colorau", "cominho"],
+        steps: [
+          "Refogue alho e cebola.",
+          "Adicione a carne e cozinhe até dourar.",
+          "Tempere com sal, pimenta, colorau e cominho.",
+          "Sirva com arroz e feijão já prontos."
+        ]
+      },
+      {
+        title: "Omelete proteico com queijo e tomate",
+        tags: ["rapida", "fitness"],
+        required: ["ovo", "queijo", "tomate"],
+        optional: ["cebola", "cheiro-verde", "frango"],
+        time: 12,
+        calories: 430,
+        protein: 32,
+        carbs: 8,
+        fat: 29,
+        portions: 1,
+        difficulty: "muito fácil",
+        seasonings: ["sal", "pimenta-do-reino", "orégano", "cheiro-verde"],
+        steps: [
+          "Bata os ovos com sal e pimenta.",
+          "Misture tomate picado, queijo e cheiro-verde.",
+          "Leve à frigideira antiaderente.",
+          "Doure dos dois lados e sirva quente."
+        ]
+      },
+      {
+        title: "Arroz de forno simples com frango",
+        tags: ["economica"],
+        required: ["arroz", "frango", "queijo"],
+        optional: ["milho", "tomate", "cebola", "cenoura"],
+        time: 40,
+        calories: 760,
+        protein: 45,
+        carbs: 83,
+        fat: 24,
+        portions: 3,
+        difficulty: "médio",
+        seasonings: ["alho", "cebola", "sal", "pimenta", "orégano"],
+        steps: [
+          "Desfie ou pique o frango já cozido.",
+          "Misture arroz, frango, tomate, milho e cenoura.",
+          "Coloque em uma travessa e cubra com queijo.",
+          "Leve ao forno até gratinar."
+        ]
+      },
+      {
+        title: "Feijão reforçado com ovo",
+        tags: ["economica", "fitness"],
+        required: ["feijão", "ovo", "cebola"],
+        optional: ["alho", "cheiro-verde", "tomate"],
+        time: 18,
+        calories: 480,
+        protein: 28,
+        carbs: 48,
+        fat: 16,
+        portions: 1,
+        difficulty: "fácil",
+        seasonings: ["alho", "cebola", "sal", "pimenta", "cheiro-verde"],
+        steps: [
+          "Aqueça o feijão em uma panela.",
+          "Refogue alho e cebola em outra panela e misture ao feijão.",
+          "Prepare ovos cozidos, fritos ou mexidos.",
+          "Sirva o feijão com os ovos e finalize com cheiro-verde."
+        ]
+      },
+      {
+        title: "Panela rápida de carne com batata",
+        tags: ["economica"],
+        required: ["carne", "batata", "cebola"],
+        optional: ["alho", "tomate", "cenoura"],
+        time: 45,
+        calories: 690,
+        protein: 39,
+        carbs: 55,
+        fat: 30,
+        portions: 2,
+        difficulty: "médio",
+        seasonings: ["sal", "alho", "cebola", "pimenta-do-reino", "colorau", "louro"],
+        steps: [
+          "Tempere a carne com sal, alho e pimenta.",
+          "Refogue até selar bem.",
+          "Adicione batata, tomate e um pouco de água.",
+          "Cozinhe até a carne e a batata ficarem macias."
+        ]
+      }
+    ];
+
+    const photoInput = document.getElementById("photoInput");
+    const preview = document.getElementById("preview");
+    const uploadText = document.getElementById("uploadText");
+
+    photoInput.addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        preview.src = e.target.result;
+        preview.style.display = "block";
+        uploadText.style.display = "none";
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function normalize(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .trim();
+    }
+
+    function simulateRecognition() {
+      const simulated = ["arroz", "ovo", "tomate", "cebola", "frango"];
+      simulated.forEach(addIngredient);
+      renderIngredients();
+      renderRecipes();
+    }
+
+    function addIngredientFromInput() {
+      const input = document.getElementById("ingredientInput");
+      const value = normalize(input.value);
+      if (!value) return;
+      addIngredient(value);
+      input.value = "";
+      renderIngredients();
+      renderRecipes();
+    }
+
+    document.getElementById("ingredientInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        addIngredientFromInput();
+      }
+    });
+
+    function addIngredient(name) {
+      const ingredient = normalize(name);
+      if (!ingredient) return;
+      if (!state.ingredients.includes(ingredient)) {
+        state.ingredients.push(ingredient);
+      }
+    }
+
+    function removeIngredient(name) {
+      state.ingredients = state.ingredients.filter(item => item !== name);
+      renderIngredients();
+      renderRecipes();
+    }
+
+    function renderIngredients() {
+      const list = document.getElementById("ingredientList");
+
+      if (state.ingredients.length === 0) {
+        list.innerHTML = "";
+        return;
+      }
+
+      list.innerHTML = state.ingredients.map(item => `
+        <span class="ingredient">
+          ${item}
+          <button onclick="removeIngredient('${item}')" title="Remover">×</button>
+        </span>
+      `).join("");
+    }
+
+    function scoreRecipe(recipe) {
+      const available = state.ingredients;
+      const requiredMatches = recipe.required.filter(item => available.includes(item)).length;
+      const optionalMatches = recipe.optional.filter(item => available.includes(item)).length;
+      const missing = recipe.required.filter(item => !available.includes(item));
+
+      return {
+        score: requiredMatches * 3 + optionalMatches,
+        requiredMatches,
+        optionalMatches,
+        missing
+      };
+    }
+
+    function renderRecipes() {
+      const recipesEl = document.getElementById("recipes");
+      const goal = document.getElementById("goalFilter").value;
+      const maxTime = document.getElementById("timeFilter").value;
+      const difficulty = document.getElementById("difficultyFilter").value;
+
+      if (state.ingredients.length === 0) {
+        recipesEl.innerHTML = `<div class="empty">Adicione ingredientes para receber sugestões de receitas.</div>`;
+        return;
+      }
+
+      let matched = recipesDatabase
+        .map(recipe => ({ ...recipe, match: scoreRecipe(recipe) }))
+        .filter(recipe => recipe.match.requiredMatches > 0)
+        .filter(recipe => goal === "todos" || recipe.tags.includes(goal))
+        .filter(recipe => maxTime === "todos" || recipe.time <= Number(maxTime))
+        .filter(recipe => difficulty === "todos" || recipe.difficulty === difficulty)
+        .sort((a, b) => b.match.score - a.match.score);
+
+      if (matched.length === 0) {
+        recipesEl.innerHTML = `
+          <div class="empty">
+            Nenhuma receita encontrada com os filtros atuais. Tente adicionar mais ingredientes ou remover filtros.
+          </div>
+        `;
+        return;
+      }
+
+      recipesEl.innerHTML = matched.map(recipe => {
+        const canMakeNow = recipe.match.missing.length === 0;
+        const missingText = canMakeNow
+          ? "Você consegue fazer agora"
+          : "Falta: " + recipe.match.missing.join(", ");
+
+        return `
+          <article class="recipe-card">
+            <div class="recipe-head">
+              <div>
+                <h3>${recipe.title}</h3>
+                <div class="recipe-meta">
+                  <span>⏱️ ${recipe.time} min</span>
+                  <span>🔥 ${recipe.calories} kcal</span>
+                  <span>💪 ${recipe.protein}g proteína</span>
+                  <span>🍚 ${recipe.carbs}g carb.</span>
+                  <span>🥑 ${recipe.fat}g gordura</span>
+                  <span>🍽️ ${recipe.portions} porção(ões)</span>
+                  <span>⭐ ${recipe.difficulty}</span>
+                </div>
+              </div>
+              <span class="tag">${canMakeNow ? "Pronto agora" : "Quase lá"}</span>
+            </div>
+
+            <p class="notice"><strong>${missingText}</strong></p>
+
+            <details>
+              <summary>Ver receita completa</summary>
+              <div class="recipe-body">
+                <h4>Ingredientes principais</h4>
+                <ul>
+                  ${recipe.required.map(item => `<li>${item}</li>`).join("")}
+                </ul>
+
+                <h4>Ingredientes opcionais</h4>
+                <ul>
+                  ${recipe.optional.map(item => `<li>${item}</li>`).join("")}
+                </ul>
+
+                <h4>Temperos recomendados</h4>
+                <p>${recipe.seasonings.join(", ")}.</p>
+
+                <h4>Modo de preparo</h4>
+                <ol>
+                  ${recipe.steps.map(step => `<li>${step}</li>`).join("")}
+                </ol>
+
+                <p class="notice">
+                  Valores nutricionais aproximados. Na versão final, o cálculo pode ser ajustado conforme quantidade e marca dos ingredientes.
+                </p>
+              </div>
+            </details>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function clearAll() {
+      state.ingredients = [];
+      photoInput.value = "";
+      preview.src = "";
+      preview.style.display = "none";
+      uploadText.style.display = "block";
+      renderIngredients();
+      renderRecipes();
+    }
+
+    renderIngredients();
+    renderRecipes();
+  </script>
+</body>
+</html>
